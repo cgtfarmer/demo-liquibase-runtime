@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: demo-liquibase
+    environment:
+      MAVEN_CONFIG: /root/.m2
+      DB_JDBC_URL: 'jdbc:postgresql://postgres:5432/postgres'
+      DB_USERNAME: postgres
+      DB_PASSWORD: super
+      DB_CHANGELOG_FILE: 'db/db.changelog-root.yml'
+    expose:
+      - 80
+    extra_hosts: # For Linux
+      - host.docker.internal:host-gateway
+    tty: true
+    volumes:
+      - ./:/usr/src/app
+      - ${HOME}/.m2/repository:/root/.m2/repository
+
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: super
+      POSTGRES_USER: postgres
+    image: postgres:13
+    ports:
+      - 5432:5432
+    # volumes:
+    #   - postgres:/var/lib/postgresql/data
+
+# volumes:
+#   postgres:
